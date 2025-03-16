@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recommendations</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Financial Insights</h1>
+        
+        <div class="dashboard">
+            <div class="widget">
+                <h2>Financial Health Score</h2>
+                <div id="health-score">
+                    <div class="score-circle">
+                        <span id="score-value">--</span>
+                        <span id="score-label">Loading...</span>
+                    </div>
+                </div>
+                <div id="health-status"></div>
+            </div>
+
+            <div class="widget">
+                <h2>AI Recommendations</h2>
+                <div id="recommendations">
+                    <div id="loading">Loading recommendations...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="window.location.href='index.html'" class="back-button">Back to Dashboard</button>
+            <button onclick="refreshInsights()" class="refresh-button">Refresh Insights</button>
+        </div>
+    </div>
+
+    <script>
+        async function loadHealthScore() {
+            try {
+                const response = await fetch('/get_health_check');
+                const data = await response.json();
+
+                if (response.ok) {
+                    const scoreElement = document.getElementById('score-value');
+                    const labelElement = document.getElementById('score-label');
+                    const statusElement = document.getElementById('health-status');
+
+                    scoreElement.textContent = data.score;
+                    labelElement.textContent = 'Health Score';
+                    
+                    // Update score circle color based on score
+                    const scoreCircle = document.querySelector('.score-circle');
+                    if (data.score > 75) {
+                        scoreCircle.style.backgroundColor = '#4CAF50';
+                    } else if (data.score > 50) {
+                        scoreCircle.style.backgroundColor = '#FFA500';
+                    } else {
+                        scoreCircle.style.backgroundColor = '#FF4444';
+                    }
+
+                    statusElement.textContent = `Status: ${data.status}`;
+                    statusElement.className = `status-${data.status.toLowerCase().replace(' ', '-')}`;
+                }
+            } catch (error) {
+                console.error('Error loading health score:', error);
+            }
+        }
+
+        async function loadRecommendations() {
+            try {
+                const response = await fetch('/get_recommendations');
+                const data = await response.json();
+
+                if (response.ok) {
+                    const recsDiv = document.getElementById('recommendations');
+                    recsDiv.innerHTML = ''; // Clear loading message
+
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        const ul = document.createElement('ul');
+                        ul.className = 'recommendations-list';
+                        
+                        data.recommendations.forEach(rec => {
+                            const li = document.createElement('li');
+                            li.textContent = rec;
+                            ul.appendChild(li);
+                        });
+                        
+                        recsDiv.appendChild(ul);
+                    } else {
+                        recsDiv.innerHTML = '<p>No recommendations available at this time.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading recommendations:', error);
+                document.getElementById('recommendations').innerHTML = 
+                    '<p class="error">Error loading recommendations. Please try again later.</p>';
+            }
+        }
+
+        function refreshInsights() {
+            loadHealthScore();
+            loadRecommendations();
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', refreshInsights);
+    </script>
+</body>
+</html>

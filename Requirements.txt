@@ -1,5 +1,5 @@
-##requirements.txt
-scikit-learn==1.3.0
-matplotlib==3.7.1
-numpy==1.24.3
-pandas==2.0.3
+flask
+flask-cors
+matplotlib
+scikit-learn
+numpy

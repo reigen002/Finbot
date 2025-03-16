@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Financial Assistant</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <h1>💰 AI Financial Assistant</h1>
+        
+        <div class="dashboard">
+            <div class="widget">
+                <h2>Add Expense</h2>
+                <input type="text" id="category" placeholder="Category" list="categories">
+                <datalist id="categories"></datalist>
+                <input type="number" id="amount" placeholder="Amount" step="0.01" min="0">
+                <button onclick="logExpense()">Log Expense</button>
+            </div>
+
+            <div class="widget">
+                <h2>Add Budget Category</h2>
+                <input type="text" id="newCategory" placeholder="Category Name">
+                <input type="number" id="newBudget" placeholder="Budget Amount" step="0.01" min="0">
+                <button onclick="addBudget()">Add Budget</button>
+            </div>
+
+            <div class="widget">
+                <h2>Budget Summary</h2>
+                <div id="summary"></div>
+            </div>
+
+            <div class="widget">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <a href="chart.html"><button>📊 View Charts</button></a>
+                    <a href="ai.html"><button>🤖 AI Insights</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

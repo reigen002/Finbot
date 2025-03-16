@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Chart</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+    <div class="container">
+        <h1>💹 Expense Visualization</h1>
+        <div class="chart-container">
+            <div id="chart-wrapper">
+                <img id="expense-chart" alt="Expense Chart" style="max-width: 100%; height: auto;">
+            </div>
+            <div id="loading" style="display: none;">Loading chart...</div>
+            <div id="error" style="display: none; color: red;"></div>
+        </div>
+        <div class="controls">
+            <button onclick="window.location.href='index.html'" class="back-button">Back to Dashboard</button>
+            <button onclick="refreshChart()" class="refresh-button">Refresh Chart</button>
+        </div>
+    </div>
+
+    <script>
+        async function loadChart() {
+            const chartImg = document.getElementById('expense-chart');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            chartImg.style.display = 'none';
+
+            try {
+                const response = await fetch('/get_plot');
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    chartImg.src = `data:image/png;base64,${data.image}`;
+                    chartImg.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Failed to load chart');
+                }
+            } catch (err) {
+                error.textContent = err.message || 'Error loading chart';
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function refreshChart() {
+            loadChart();
+        }
+
+        // Load chart when page loads
+        document.addEventListener('DOMContentLoaded', loadChart);
+    </script>
+</body>
+</html>
